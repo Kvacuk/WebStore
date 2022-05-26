@@ -1,72 +1,82 @@
-﻿using DataAccess.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using DataAccess.Context;
+using DataAccess.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace DataAccess.Repositories
 {
-    public abstract class Repository<TEntity, TKey> : IRepository<TEntity, TKey> where TEntity : class
+    public class Repository<TEntity, TKey> : IRepository<TEntity, TKey> where TEntity : class
     {
-        public Task AddAsync(TEntity entity)
+        readonly WebStoreContext db;
+
+        public Repository(WebStoreContext context)
         {
-            throw new NotImplementedException();
+            db = context;
+        }
+        public virtual async Task AddAsync(TEntity entity)
+        {
+            await db.Set<TEntity>().AddAsync(entity);
+            await db.SaveChangesAsync();
         }
 
-        public Task AddRangeAsync(IEnumerable<TEntity> entities)
+        public virtual async Task AddRangeAsync(IEnumerable<TEntity> entities)
         {
-            throw new NotImplementedException();
+            await db.Set<TEntity>().AddRangeAsync(entities);
+            await db.SaveChangesAsync();
         }
 
-        public Task<bool> AnyAsync(Func<TEntity, bool> expression)
+        public virtual async Task<bool> AnyAsync(Expression<Func<TEntity, bool>> expression)
         {
-            throw new NotImplementedException();
+            return await db.Set<TEntity>().Where(expression).AsQueryable().AnyAsync();
         }
 
-        public Task<int> CountAsync(Func<TEntity, bool> expression)
+        public virtual async Task<int> CountAsync(Expression<Func<TEntity, bool>> expression)
         {
-            throw new NotImplementedException();
+            return await db.Set<TEntity>().Where(expression).AsQueryable().CountAsync();
         }
 
-        public Task<IEnumerable<TEntity>> GetAllAsync()
+        public virtual async Task<IEnumerable<TEntity>> FindAsync(Expression<Func<TEntity, bool>> expression)
         {
-            throw new NotImplementedException();
+            return await db.Set<TEntity>().Where(expression).AsQueryable().ToListAsync();
         }
 
-        public Task<TEntity> GetByIdAsync(TKey id)
+        public virtual async Task<TEntity> FindFirstAsync(Expression<Func<TEntity, bool>> expression)
         {
-            throw new NotImplementedException();
+            return await db.Set<TEntity>().Where(expression).FirstOrDefaultAsync();
         }
 
-        public Task<TEntity> GetByNameAsync(string name)
+        public virtual async Task<IEnumerable<TEntity>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await db.Set<TEntity>().ToListAsync();
         }
 
-        public Task<IEnumerable<TEntity>> GetRangeByNameAsync(string name)
+        public virtual async Task<TEntity> GetByIdAsync(TKey id)
         {
-            throw new NotImplementedException();
+            return await db.Set<TEntity>().FindAsync(id);
         }
 
-        public Task RemoveAsync(TEntity entity)
+        public virtual async Task RemoveAsync(TEntity entity)
         {
-            throw new NotImplementedException();
+            db.Set<TEntity>().Remove(entity);
+            await db.SaveChangesAsync();
         }
 
-        public Task RemoveRangeAsync(IEnumerable<TEntity> entities)
+        public virtual async Task RemoveRangeAsync(IEnumerable<TEntity> entities)
         {
-            throw new NotImplementedException();
+            db.Set<TEntity>().RemoveRange(entities);
+            await db.SaveChangesAsync();
         }
 
-        public Task UpdateAsync(TEntity entity)
+        public virtual async Task UpdateAsync(TEntity entity)
         {
-            throw new NotImplementedException();
+            db.Set<TEntity>().Update(entity);
+            await db.SaveChangesAsync();
         }
 
-        public Task UpdateRangeAsync(IEnumerable<TEntity> entities)
+        public virtual async Task UpdateRangeAsync(IEnumerable<TEntity> entities)
         {
-            throw new NotImplementedException();
+            db.Set<TEntity>().UpdateRange(entities);
+            await db.SaveChangesAsync();
         }
     }
 }
