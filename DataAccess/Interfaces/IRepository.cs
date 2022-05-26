@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq.Expressions;
 
 namespace DataAccess.Interfaces
 {
@@ -15,21 +11,21 @@ namespace DataAccess.Interfaces
         /// <param name="id">The identifier.</param>
         public Task<TEntity> GetByIdAsync(TKey id);
 
-        /// <summary>Gets the Entity by name asynchronous.</summary>
-        /// <param name="name">The name.</param>
-        public Task<TEntity> GetByNameAsync(string name);
+        /// <summary>Finds the Entities by expression asynchronous.</summary>
+        /// <param name="expression">The expression.</param>
+        public Task<IEnumerable<TEntity>> FindAsync(Expression<Func<TEntity, bool>> expression);
 
-        /// <summary>Gets the range of entities by name asynchronous.</summary>
-        /// <param name="name">The name.</param>
-        public Task<IEnumerable<TEntity>> GetRangeByNameAsync(string name);
+        /// <summary>Finds the first entity by expression asynchronous.</summary>
+        /// <param name="expression">The expression.</param>
+        public Task<TEntity> FindFirstAsync(Expression<Func<TEntity, bool>> expression);
 
         /// <summary>Counts entities by specified expression.</summary>
         /// <param name="expression">The expression.</param>
-        public Task<int> CountAsync(Func<TEntity, bool> expression);
+        public Task<int> CountAsync(Expression<Func<TEntity, bool>> expression);
 
         /// <summary>Anies entities specified expression.</summary>
         /// <param name="expression">The expression.</param>
-        public Task<bool> AnyAsync(Func<TEntity, bool> expression);
+        public Task<bool> AnyAsync(Expression<Func<TEntity, bool>> expression);
 
         /// <summary>Adds entity asynchronous.</summary>
         /// <param name="entity">The entity.</param>
