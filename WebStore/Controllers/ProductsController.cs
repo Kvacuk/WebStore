@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Domain.DTO;
+using Domain.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 
 namespace WebStore.Controllers
 {
@@ -6,36 +8,43 @@ namespace WebStore.Controllers
     [ApiController]
     public class ProductsController : ControllerBase
     {
-        // GET: api/<ProductsController>
-        [HttpGet]
-        public IEnumerable<string> Get()
+        private readonly IProductService _productService;
+
+        public ProductsController(IProductService productService)
         {
-            return new string[] { "value1", "value2" };
+            _productService = productService;
         }
 
-        // GET api/<ProductsController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpGet("Products")]
+        public async Task<IActionResult> GetAllProducts()
         {
-            return "value";
+            return Ok(await _productService.GetAllProductsAsync());
         }
 
-        // POST api/<ProductsController>
-        [HttpPost]
-        public void Post([FromBody] string value)
+        [HttpGet("Product/{Id}")]
+        public async Task<IActionResult> GetProduct(string Id)
         {
+            return Ok(await _productService.GetProductByIdAsync(Id));
         }
 
-        // PUT api/<ProductsController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPost("Product")]
+        public async Task<IActionResult> CreateProduct([FromBody] ProductDto productDto)
         {
+            await _productService.CreateProductAsync(productDto);
+            return Ok();
         }
 
-        // DELETE api/<ProductsController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpPut("Product")]
+        public async Task<IActionResult> UpdateProduct([FromBody] ProductDto productDto)
         {
+            return Ok(await _productService.UpdateProductAsync(productDto););
+        }
+
+        [HttpDelete("Product")]
+        public async Task<IActionResult> RemoveProduct([FromBody] ProductDto productDto)
+        {
+            await _productService.DeleteProductAsync(productDto);
+            return Ok();
         }
     }
 }
