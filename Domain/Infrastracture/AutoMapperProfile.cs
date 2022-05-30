@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DataAccess.Entities;
 using Domain.DTO;
 using System;
 using System.Collections.Generic;
